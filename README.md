@@ -21,8 +21,9 @@ class SnowflakeConfig(
     account = 'YOUR SNOWFLAKE ACCOUNT : <AccountID.RegionName>',
     username = 'YOUR SNWOFLAKE USERNAME',
     password: 'YOUR SNOWFLAKE PASSWORD',
-    database_name = 'NAME OF DATABASE TO LOAD DATA INTO',
-    schema_name = 'NAME OF SCHEMA TO LOAD DATA INTO',
+    to_database_name = 'NAME OF DATABASE TO LOAD DATA INTO',
+    to_schema_name = 'NAME OF SCHEMA TO LOAD DATA INTO',
+    to_table_name = 'NAME OF TABLE TO LOAD DATA INTO',
 )
 ````
 
@@ -34,15 +35,8 @@ with SnowflakeClient(config=configs.snowflake, slack_client=slack) as snowflake:
 ### Functions
 
 The following methods are available for use:
-- ``__init__(self, config: SnowflakeConfig, slack_client: SlackClient)``: Initializes the Snowflake client with the given configuration and a Slack client.
-
-- ``__enter__(self)``: Creates a Snowflake client in a context manager.
-
-- ``__exit__(self, exc_type, exc_val, exc_tb)``: Closes the connection to Snowflake and exits the context.
-
-- ``fetch_table_data(self, database: str, schema: str, table: str)``: Fetches existing data from a table in Snowflake and returns a Pandas DataFrame. If the table does not exist, returns None.
-
-- ``load_dataframe(self, dataframe: pandas.DataFrame, database: str, schema: str, table: str, overwrite: bool)``: Loads a Pandas DataFrame into a Snowflake table. If the table does not exist, it will be created. Existing tables will be replaced with new tables. Returns None. If the client has no active connection, raises a RuntimeError.
-
-
-
+- ``__init__(self, config: SnowflakeConfig, slack_client: SlackClient)``: Initializes the SnowflakeClient object with a configuration object and a Slack client object.
+- ``__enter__(self) -> SnowflakeClient``: Establishes a connection to Snowflake within a context manager.
+- ``__exit__(self, exc_type, exc_val, exc_tb)`` -> None: Closes the Snowflake connection and exits the context.
+- ``fetch_table_data(self, database: str, schema: str, table: str) -> pd.DataFrame``: Fetches data from a table in Snowflake and returns a Pandas DataFrame.
+- ``load_dataframe(self, dataframe: pd.DataFrame, database: str, schema: str, table: str, overwrite: bool) -> None``: Loads a Pandas DataFrame into a Snowflake table. If the table does not exist, a new table is created, and existing tables are replaced with new tables.
