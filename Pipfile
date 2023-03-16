@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-lepaya-python-slackclient = {git = "https://github.com/Lepaya/lepaya-python-slackclient", tag = "v1.2", ref = "release-1.2"}
+lepaya-python-slackclient = {git = "https://github.com/Lepaya/lepaya-python-slackclient", tag = "v1.1", ref = "release-1.1"}
 pandas = "~=1.4"
 pyarrow = "==8.0.0"
 snowflake-connector-python = "==2.7.11"
