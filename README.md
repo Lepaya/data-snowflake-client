@@ -23,7 +23,6 @@ class SnowflakeConfig(
     password: 'YOUR SNOWFLAKE PASSWORD',
     database_name = 'NAME OF DATABASE TO LOAD DATA INTO',
     schema_name = 'NAME OF SCHEMA TO LOAD DATA INTO',
-    table_name = 'NAME OF TABLE TO LOAD DATA INTO',
 )
 ````
 
@@ -35,10 +34,15 @@ with SnowflakeClient(config=configs.snowflake, slack_client=slack) as snowflake:
 ### Functions
 
 The following methods are available for use:
-- ``__init__(self, config: SnowflakeConfig)``: Initializes the SnowflakeClient object with a Pydantic Snowflake config model. Sets the Snowflake account, username, and password.
+- ``__init__(self, config: SnowflakeConfig, slack_client: SlackClient)``: Initializes the Snowflake client with the given configuration and a Slack client.
 
-- ``__enter__(self)``: Creates a Snowflake client in a context manager. Connects to the Snowflake account using the account, username, and password.
+- ``__enter__(self)``: Creates a Snowflake client in a context manager.
 
-- ``__exit__(self, exc_type, exc_val, exc_tb)``: Closes the connection to Snowflake and exits context.
+- ``__exit__(self, exc_type, exc_val, exc_tb)``: Closes the connection to Snowflake and exits the context.
 
-- ``load_dataframe(self, dataframe: pandas.DataFrame, database: str, schema: str, table: str)`` -> str: Loads a Pandas DataFrame into a Snowflake table. If the table does not exist, a table is automatically created. Takes in the dataframe, database name, schema name, and table name as arguments. Returns a success or failure message depending on whether the load was successful. If the SnowflakeClient object has no active connection, a RuntimeError is raised.
+- ``fetch_table_data(self, database: str, schema: str, table: str)``: Fetches existing data from a table in Snowflake and returns a Pandas DataFrame. If the table does not exist, returns None.
+
+- ``load_dataframe(self, dataframe: pandas.DataFrame, database: str, schema: str, table: str, overwrite: bool)``: Loads a Pandas DataFrame into a Snowflake table. If the table does not exist, it will be created. Existing tables will be replaced with new tables. Returns None. If the client has no active connection, raises a RuntimeError.
+
+
+
