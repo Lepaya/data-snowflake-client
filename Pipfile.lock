@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "1e386d65efb873ed9968284fb9d1d8bff16b887d7de60acbdba201265f2816cd"
+            "sha256": "a56710212514836f9403e1e6e10b1fc2fd0f998c3c52914148852e4ce21067d4"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -144,8 +144,8 @@
         },
         "lepaya-python-slackclient": {
             "git": "https://github.com/Lepaya/lepaya-python-slackclient",
-            "ref": "d4f5c74faf369ff7c4d5d243fcd80484fecb26e0",
-            "tag": "v1.2"
+            "ref": "671e57f387964299d243e5d27fb2b7dfe1b1a8a4",
+            "tag": "v1.0"
         },
         "numpy": {
             "hashes": [
