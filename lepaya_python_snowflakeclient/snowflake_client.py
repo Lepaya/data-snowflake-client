@@ -77,8 +77,8 @@ class SnowflakeClient:
             raise RuntimeError
 
         LOGGER.info(
-            f"Fetching data from SnowflakeDB. table : {table}. \
-            database: {database}, schema: {schema}",
+            f"Fetching data from SnowflakeDB. Table : {table},"
+            f"Database: {database}, Schema: {schema}",
         )
         try:
             self.connection.cursor().execute(f"USE DATABASE {database}")
@@ -91,8 +91,8 @@ class SnowflakeClient:
             dataframe = cursor.fetch_pandas_all()
         except (ProgrammingError, NotSupportedError) as e:
             error_message = (
-                f"Could not fetch data from Table: {table},\
-                Database: {database},Schema: {schema} "
+                f"Could not fetch data from Table: {table},"
+                f"Database: {database},Schema: {schema} "
                 f" Error {e}"
             )
             self.slack_client.add_error_block(error_message=error_message)
@@ -102,7 +102,7 @@ class SnowflakeClient:
             log_and_update_slack(
                 slack_client=self.slack_client,
                 message=f"Successfully fetched {dataframe.shape[0]} rows "
-                f"from Table:{table},Database:{database},Schema:{schema}",
+                f"from Table: {table},Database: {database}, Schema: {schema}",
                 temp=True,
             )
             return dataframe
@@ -134,8 +134,8 @@ class SnowflakeClient:
             raise RuntimeError
 
         LOGGER.info(
-            f"Loading data into SnowflakeDB. Database: {database}, \
-            schema: {schema}, table: {table}",
+            f"Loading data into SnowflakeDB. Database: {database},"
+            f"Schema: {schema}, Table: {table}",
         )
         rows = 0
         chunks = 0
@@ -152,7 +152,7 @@ class SnowflakeClient:
             )
         except (ValueError, ProgrammingError) as e:
             error_msg = (
-                f"Failed to insert {rows} rows in {chunks} chunks into table: {table}"
+                f"Failed to insert {rows} rows in {chunks} chunks into Table: {table}"
                 f"Error : {e}"
             )
             self.slack_client.add_error_block(error_message=error_msg)
@@ -161,7 +161,7 @@ class SnowflakeClient:
             if success:
                 log_and_update_slack(
                     slack_client=self.slack_client,
-                    message=f"Successfully inserted {rows} rows in \
-                    {chunks} chunks into table: {table}",
+                    message=f"Successfully inserted {rows} rows in"
+                    f"{chunks} chunks into Table: {table}",
                     temp=True,
                 )
