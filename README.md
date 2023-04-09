@@ -40,3 +40,4 @@ The following methods are available for use:
 - ``__exit__(self, exc_type, exc_val, exc_tb)`` -> None: Closes the Snowflake connection and exits the context.
 - ``fetch_table_data(self, database: str, schema: str, table: str) -> pd.DataFrame``: Fetches data from a table in Snowflake and returns a Pandas DataFrame.
 - ``load_dataframe(self, dataframe: pd.DataFrame, database: str, schema: str, table: str, overwrite: bool) -> None``: Loads a Pandas DataFrame into a Snowflake table. If the table does not exist, a new table is created, and existing tables are replaced with new tables.
+- ``run_query(self, query: str, table: str, schema: str, database: str) -> None:``: Run an SQL query on a given table in Snowflake.
