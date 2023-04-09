@@ -26,7 +26,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         'pandas~=1.4',
-        'pyarrow==8.0.0',
+        'pyarrow~=10.0',
         'snowflake-connector-python==2.7.11',
         'structlog~=22.3',
         'pydantic~=1.9',
