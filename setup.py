@@ -24,6 +24,14 @@ setup(
     long_description_content_type="text/markdown",
     long_description=long_description,
     packages=find_packages(),
+    install_requires=[
+        'pandas~=1.4',
+        'pyarrow==8.0.0',
+        'snowflake-connector-python==2.7.11',
+        'structlog~=22.3',
+        'pydantic~=1.9',
+        'git+https://github.com/Lepaya/lepaya-python-slackclient.git@release-1.2'
+    ],
     keywords=["python", "snowflake", "dataframe", "extract", "load", "table"],
     classifiers=[
         "Development Status :: 1 - Planning",

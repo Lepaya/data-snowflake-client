@@ -2,15 +2,15 @@
 from __future__ import annotations
 
 import pandas as pd
-import snowflake.connector
 import structlog
 from snowflake.connector import SnowflakeConnection
 from snowflake.connector.errors import NotSupportedError, ProgrammingError
 from snowflake.connector.pandas_tools import write_pandas
 
 from lepaya_python_slackclient.slack_client import SlackClient
-from helpers.logging_helper import log_and_raise_error, log_and_update_slack
-from models.config_model import SnowflakeConfig
+from .helpers.logging_helper import log_and_raise_error, log_and_update_slack
+from .models.config_model import SnowflakeConfig
+
 
 LOGGER = structlog.get_logger()
 
@@ -102,18 +102,18 @@ class SnowflakeClient:
             log_and_update_slack(
                 slack_client=self.slack_client,
                 message=f"Successfully fetched {dataframe.shape[0]} rows "
-                f"from Table: {table},Database: {database}, Schema: {schema}",
+                        f"from Table: {table},Database: {database}, Schema: {schema}",
                 temp=True,
             )
             return dataframe
 
     def load_dataframe(
-        self,
-        dataframe: pd.DataFrame,
-        database: str,
-        schema: str,
-        table: str,
-        overwrite: bool,
+            self,
+            dataframe: pd.DataFrame,
+            database: str,
+            schema: str,
+            table: str,
+            overwrite: bool,
     ) -> None:
         """Load a dataframe into a Snowflake table.
 
@@ -162,6 +162,36 @@ class SnowflakeClient:
                 log_and_update_slack(
                     slack_client=self.slack_client,
                     message=f"Successfully inserted {rows} rows in"
-                    f"{chunks} chunks into Table: {table}",
+                            f"{chunks} chunks into Table: {table}",
                     temp=True,
                 )
+
+    # def run_query(self, query: str, table: str, schema: str, database: str):
+    #     if self.connection is None:
+    #         raise RuntimeError
+    #
+    #     LOGGER.info(
+    #         f"Loading data into SnowflakeDB. Database: {database},"
+    #         f"Schema: {schema}, Table: {table}",
+    #     )
+    #     rows = 0
+    #     chunks = 0
+    #     try:
+    #         self.connection.cursor().execute(f"USE DATABASE {database}")
+    #         self.connection.cursor().execute(f"USE SCHEMA {schema}")
+    #         self.connection.cursor()_.execute(query)
+    #     except (ValueError, ProgrammingError) as e:
+    #         error_msg = (
+    #             f"Failed to insert {rows} rows in {chunks} chunks into Table: {table}"
+    #             f"Error : {e}"
+    #         )
+    #         self.slack_client.add_error_block(error_message=error_msg)
+    #         log_and_raise_error(message=error_msg)
+    #     else:
+    #         if success:
+    #             log_and_update_slack(
+    #                 slack_client=self.slack_client,
+    #                 message=f"Successfully inserted {rows} rows in"
+    #                         f"{chunks} chunks into Table: {table}",
+    #                 temp=True,
+    #             )
