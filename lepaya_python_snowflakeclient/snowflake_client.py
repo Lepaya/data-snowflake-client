@@ -53,7 +53,7 @@ class SnowflakeClient:
                 f"Failed to make connection with SnowflakeDB"
                 f"Error : {e}"
             )
-            self.slack_client.add_error_block(error_msg=error_msg)
+            self.slack_client.add_error_block(error_msg)
             log_and_raise_error(message=error_msg)
         return self
 
@@ -102,7 +102,7 @@ class SnowflakeClient:
                 f"Database: {database},Schema: {schema} "
                 f" Error {e}"
             )
-            self.slack_client.add_error_block(error_msg=error_message)
+            self.slack_client.add_error_block(error_message)
             log_and_raise_error(error_message)
         else:
             log_and_update_slack(
@@ -160,7 +160,7 @@ class SnowflakeClient:
                 f"Failed to insert {rows} rows in {chunks} chunks into Table: {table}"
                 f"Error : {e}"
             )
-            self.slack_client.add_error_block(error_msg=error_msg)
+            self.slack_client.add_error_block(error_msg)
             log_and_raise_error(message=error_msg)
         else:
             if success:
@@ -200,7 +200,7 @@ class SnowflakeClient:
                 f"Failed to run query: {query} on Table: {table}"
                 f"Error : {e}"
             )
-            self.slack_client.add_error_block(error_msg=error_msg)
+            self.slack_client.add_error_block(error_msg)
             log_and_raise_error(message=error_msg)
         else:
             log_and_update_slack(
