@@ -144,7 +144,7 @@
         },
         "lepaya-python-slackclient": {
             "git": "https://github.com/Lepaya/lepaya-python-slackclient",
-            "ref": "2c5832368d3954acfb870e925a2529c72aac7e73"
+            "ref": "e5b98503a8acdf48233f135d9e3c579df115c22a"
         },
         "numpy": {
             "hashes": [
