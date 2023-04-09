@@ -1,4 +1,4 @@
-# Lepaya Snowflake Client
+# Lepaya Snowflake Client v1.0
 The Lepaya Snowflake Client is a Python library that allows you to interact with the Snowflake API and load/extract data from SnowflakeDB. This library was developed by Humaid Mollah for Lepaya.
 
 ## Installation
