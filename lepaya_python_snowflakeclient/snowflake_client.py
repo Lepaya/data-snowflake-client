@@ -7,7 +7,7 @@ import structlog
 from snowflake.connector import SnowflakeConnection
 from snowflake.connector.pandas_tools import write_pandas
 
-from models.config_model import SnowflakeConfig
+from .models.config_model import SnowflakeConfig
 
 LOGGER = structlog.get_logger()
 
