@@ -30,7 +30,6 @@ setup(
         'snowflake-connector-python==2.7.11',
         'structlog~=22.3',
         'pydantic~=1.9',
-        'git+https://github.com/Lepaya/lepaya-python-slackclient.git@release-1.1'
     ],
     keywords=["python", "snowflake", "dataframe", "extract", "load", "table"],
     classifiers=[

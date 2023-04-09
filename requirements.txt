@@ -1,4 +1,3 @@
-git+https://github.com/Lepaya/lepaya-python-slackclient.git@release-1.1
 pandas~=1.4
 pyarrow==8.0.0
 pydantic~=1.9

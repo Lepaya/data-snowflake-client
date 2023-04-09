@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "900de8eb3b94db13f82ab62f9554e3a69a04b7f0c8363c92ba97f04000fb2095"
+            "sha256": "b1f2f48bd1a7d35d75534308dc93c9d3f17a9fff0758a66ce1d81b63df96c637"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -141,10 +141,6 @@
             ],
             "markers": "python_version >= '3.5'",
             "version": "==3.4"
-        },
-        "lepaya-python-slackclient": {
-            "git": "https://github.com/Lepaya/lepaya-python-slackclient",
-            "ref": "0c5d4c83002797631ff3af80e8c4bc8641ab9991"
         },
         "numpy": {
             "hashes": [
@@ -398,14 +394,6 @@
             ],
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
             "version": "==1.16.0"
-        },
-        "slack-sdk": {
-            "hashes": [
-                "sha256:552c6961293da524def64e012543bc4b8859f96fa8780f016de6daf8abeb1c1c",
-                "sha256:c5452d0bfa8cb716103522e51f695efac8d62af20d95e419b8c3265525941405"
-            ],
-            "markers": "python_full_version >= '3.6.0'",
-            "version": "==3.21.0"
         },
         "snowflake-connector-python": {
             "hashes": [
