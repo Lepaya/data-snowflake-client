@@ -22,7 +22,8 @@ def log_and_update_slack(slack_client: SlackClient, message: str, temp: bool) ->
         temp: True if the Slack message should be temporary.
     """
     LOGGER.info(message)
-    slack_client.add_message_block(message=message, temp=temp)
+    if slack_client is not None:
+        slack_client.add_message_block(message=message, temp=temp)
 
 
 def log_and_raise_error(message: str):
