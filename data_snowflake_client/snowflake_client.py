@@ -151,7 +151,7 @@ class SnowflakeClient:
                 quote_identifiers=False,
             )
         except (DatabaseError, RuntimeError) as e:
-            log_and_raise_error(message=f"Failed to insert {rows} rows into SnowflakeDB. "
+            log_and_raise_error(message=f"Failed to insert {dataframe.shape[0]} rows into SnowflakeDB. "
                                         f"Table: {table}, Database: {database}, Schema: {schema}. "
                                         f"Error : {e}.")
         else:
