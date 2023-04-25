@@ -2,11 +2,8 @@
 
 from __future__ import annotations
 
-import logging
-import os
-
 import structlog
-from lepaya_python_slackclient.slack_client import SlackClient
+from data_slack_client.slack_client import SlackClient
 
 LOGGER = structlog.get_logger()
 PACKAGE_NAMES = ["requests", "urllib3", "snowflake.connector", "slack_sdk"]
