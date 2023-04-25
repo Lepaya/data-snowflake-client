@@ -25,7 +25,7 @@ setup(
     long_description=long_description,
     packages=find_packages(),
     install_requires=[
-        'lepaya-python-slackclient @ git+https://github.com/Lepaya/lepaya-python-slackclient@release-1.2',
+        'data-slack-client @ git+https://github.com/Lepaya/data-slack-client@release-1.2.1',
         'pandas~=1.4',
         'pyarrow~=8.0',
         'snowflake-connector-python==2.7.11',
