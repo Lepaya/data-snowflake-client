@@ -12,8 +12,6 @@ from data_slack_client.slack_client import SlackClient
 from .helpers.logging_helper import log_and_raise_error, log_and_update_slack
 from .models.config_model import SnowflakeConfig
 
-LOGGER = structlog.get_logger()
-
 
 class SnowflakeClient:
     """Client used to interact with Snowflake."""
@@ -48,12 +46,11 @@ class SnowflakeClient:
                 user=self.username,
                 password=self.password,
             )
+            log_and_update_slack(slack_client=self.slack_client, message="Successfully connected to SnowflakeDB.",
+                                 temp=True)
         except DatabaseError as e:
-            error_msg = (
-                f"Failed to connect to SnowflakeDB. "
-                f"Error : {e}."
-            )
-            log_and_raise_error(message=error_msg)
+            log_and_raise_error(message=f"Failed to connect to SnowflakeDB. "
+                                        f"Error : {e}.")
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:  # type: ignore
@@ -82,9 +79,11 @@ class SnowflakeClient:
         Raises:
             ValueError: Could not fetch table data.
         """
-        LOGGER.info(
-            f"Fetching data from SnowflakeDB. "
-            f"Table : {table}, Database: {database}, Schema: {schema}."
+        log_and_update_slack(
+            slack_client=self.slack_client,
+            message=f"Fetching data from SnowflakeDB. "
+                    f"Table : {table}, Database: {database}, Schema: {schema}.",
+            temp=True,
         )
         try:
             if self.connection is None:
@@ -96,12 +95,9 @@ class SnowflakeClient:
                 raise ValueError("No valid cursor returned from Snowflake")
             dataframe = cursor.fetch_pandas_all()
         except (DatabaseError, RuntimeError, ValueError) as e:
-            error_message = (
-                f"Could not fetch data from SnowflakeDB. "
-                f"Table: {table}, Database: {database}, Schema: {schema}. "
-                f"Error {e}."
-            )
-            log_and_raise_error(error_message)
+            log_and_raise_error(f"Could not fetch data from SnowflakeDB. "
+                                f"Table: {table}, Database: {database}, Schema: {schema}. "
+                                f"Error {e}.")
         else:
             log_and_update_slack(
                 slack_client=self.slack_client,
@@ -134,9 +130,11 @@ class SnowflakeClient:
         Raises:
             ValueError: Could not load dataframe.
         """
-        LOGGER.info(
-            f"Loading data into SnowflakeDB. "
-            f"Table: {table}, Database: {database}, Schema: {schema}."
+        log_and_update_slack(
+            slack_client=self.slack_client,
+            message=f"Loading data into SnowflakeDB. "
+                    f"Table: {table}, Database: {database}, Schema: {schema}.",
+            temp=True,
         )
         rows = 0
         chunks = 0
@@ -154,12 +152,9 @@ class SnowflakeClient:
                 quote_identifiers=False,
             )
         except (DatabaseError, RuntimeError) as e:
-            error_msg = (
-                f"Failed to insert {rows} rows into SnowflakeDB. "
-                f"Table: {table}, Database: {database}, Schema: {schema}. "
-                f"Error : {e}."
-            )
-            log_and_raise_error(message=error_msg)
+            log_and_raise_error(message=f"Failed to insert {rows} rows into SnowflakeDB. "
+                                        f"Table: {table}, Database: {database}, Schema: {schema}. "
+                                        f"Error : {e}.")
         else:
             if success:
                 log_and_update_slack(
@@ -181,9 +176,11 @@ class SnowflakeClient:
         Raises:
             ValueError: Could not run query.
         """
-        LOGGER.info(
-            f"Updating data in SnowflakeDB. "
-            f"Table: {table}, Database: {database}, Schema: {schema}."
+        log_and_update_slack(
+            slack_client=self.slack_client,
+            message=f"Updating data in SnowflakeDB. "
+                    f"Table: {table}, Database: {database}, Schema: {schema}.",
+            temp=True,
         )
         try:
             if self.connection is None:
@@ -194,12 +191,9 @@ class SnowflakeClient:
             if not cursor:
                 raise ValueError("No valid cursor returned from Snowflake")
         except (ValueError, RuntimeError, DatabaseError) as e:
-            error_msg = (
-                f"Failed to run query: {query}. "
-                f"Table: {table}, Database: {database}, Schema: {schema}."
-                f"Error : {e}"
-            )
-            log_and_raise_error(message=error_msg)
+            log_and_raise_error(message=f"Failed to run query: {query}. "
+                                        f"Table: {table}, Database: {database}, Schema: {schema}."
+                                        f"Error : {e}")
         else:
             log_and_update_slack(
                 slack_client=self.slack_client,
