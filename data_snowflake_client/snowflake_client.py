@@ -2,13 +2,12 @@
 from __future__ import annotations
 
 import pandas as pd
-import structlog
 import snowflake.connector
+from data_slack_client.slack_client import SlackClient
 from snowflake.connector import SnowflakeConnection
 from snowflake.connector.errors import DatabaseError
 from snowflake.connector.pandas_tools import write_pandas
 
-from data_slack_client.slack_client import SlackClient
 from .helpers.logging_helper import log_and_raise_error, log_and_update_slack
 from .models.config_model import SnowflakeConfig
 
