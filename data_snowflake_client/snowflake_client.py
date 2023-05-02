@@ -63,49 +63,6 @@ class SnowflakeClient:
         """
         self.connection.close()  # type: ignore
 
-    def fetch_table_data(self, database: str, schema: str, table: str) -> pd.DataFrame:
-        """Fetch data from a table in Snowflake as a pandas dataframe.
-
-        Args:
-            database: Name of the Snowflake database to fetch data.
-            schema: Name of the Snowflake schema to fetch data.
-            table: Name of the Snowflake table to fetch data.
-
-        Returns:
-            Pandas DataFrame with existing table data.
-            None, if an error occurs or the table has no rows.
-
-        Raises:
-            ValueError: Could not fetch table data.
-        """
-        log_and_update_slack(
-            slack_client=self.slack_client,
-            message=f"Fetching data from SnowflakeDB. "
-                    f"Table : {table}, Database: {database}, Schema: {schema}.",
-            temp=True,
-        )
-        try:
-            if self.connection is None:
-                raise RuntimeError("No active connection to SnowflakeDB")
-            self.connection.cursor().execute(f"USE DATABASE {database}")
-            self.connection.cursor().execute(f"USE SCHEMA {schema}")
-            cursor = self.connection.cursor().execute(f"SELECT * FROM {table}")
-            if not cursor:
-                raise ValueError("No valid cursor returned from Snowflake")
-            dataframe = cursor.fetch_pandas_all()
-        except (DatabaseError, RuntimeError, ValueError) as e:
-            log_and_raise_error(f"Could not fetch data from SnowflakeDB. "
-                                f"Table: {table}, Database: {database}, Schema: {schema}. "
-                                f"Error {e}.")
-        else:
-            log_and_update_slack(
-                slack_client=self.slack_client,
-                message=f"Successfully fetched {dataframe.shape[0]} rows from SnowflakeDB. "
-                        f"Table: {table}, Database: {database}, Schema: {schema}.",
-                temp=True,
-            )
-            return dataframe
-
     def load_dataframe(
             self,
             dataframe: pd.DataFrame,
@@ -113,6 +70,9 @@ class SnowflakeClient:
             schema: str,
             table: str,
             overwrite: bool,
+            warehouse: str | None = None,
+            role: str | None = None,
+            quote_identifiers: bool = False
     ) -> None:
         """Load a dataframe into a Snowflake table.
 
@@ -125,6 +85,9 @@ class SnowflakeClient:
             schema: Name of the Snowflake schema to load data into.
             table: Name of the Snowflake table to load data into.
             overwrite: Overwrite existing table.
+            warehouse: Name of the Snowflake warehouse to load data [Optional].
+            role: Name of the Snowflake role to load data [Optional].
+            quote_identifiers: True if identifiers should be quoted, else False [Optional].
 
         Raises:
             ValueError: Could not load dataframe.
@@ -140,6 +103,10 @@ class SnowflakeClient:
         try:
             if self.connection is None:
                 raise RuntimeError("No active connection to SnowflakeDB")
+            if role is not None:
+                self.connection.cursor().execute(f"USE ROLE {role}")
+            if warehouse is not None:
+                self.connection.cursor().execute(f"USE WAREHOUSE {warehouse}")
             self.connection.cursor().execute(f"USE DATABASE {database}")
             self.connection.cursor().execute(f"USE SCHEMA {schema}")
             success, chunks, rows, _ = write_pandas(
@@ -148,11 +115,10 @@ class SnowflakeClient:
                 df=dataframe,
                 auto_create_table=True,
                 overwrite=overwrite,
-                quote_identifiers=False,
+                quote_identifiers=quote_identifiers,
             )
         except (DatabaseError, RuntimeError) as e:
             log_and_raise_error(message=f"Failed to insert {dataframe.shape[0]} rows into SnowflakeDB. "
-                                        f"Table: {table}, Database: {database}, Schema: {schema}. "
                                         f"Error : {e}.")
         else:
             if success:
@@ -163,7 +129,8 @@ class SnowflakeClient:
                     temp=True,
                 )
 
-    def run_query(self, query: str, table: str, schema: str, database: str) -> None:
+    def run_query(self, query: str, table: str, schema: str, database: str, warehouse: str | None = None,
+                  role: str | None = None) -> pd.DataFrame:
         """Run an SQL query on a Snowflake table.
 
         Args:
@@ -171,9 +138,14 @@ class SnowflakeClient:
             database: Name of the Snowflake database to run query.
             schema: Name of the Snowflake schema to run query.
             table: Name of the Snowflake table to run query.
+            warehouse: Name of the Snowflake warehouse to run query [Optional].
+            role: Name of the Snowflake role to run query [Optional].
 
         Raises:
             ValueError: Could not run query.
+
+        Returns:
+            Pandas dataframe with the result of the query.
         """
         log_and_update_slack(
             slack_client=self.slack_client,
@@ -184,14 +156,18 @@ class SnowflakeClient:
         try:
             if self.connection is None:
                 raise RuntimeError("No active connection to SnowflakeDB")
+            if role is not None:
+                self.connection.cursor().execute(f"USE ROLE {role}")
+            if warehouse is not None:
+                self.connection.cursor().execute(f"USE WAREHOUSE {warehouse}")
             self.connection.cursor().execute(f"USE DATABASE {database}")
             self.connection.cursor().execute(f"USE SCHEMA {schema}")
             cursor = self.connection.cursor().execute(query)
             if not cursor:
                 raise ValueError("No valid cursor returned from Snowflake")
+            dataframe = cursor.fetch_pandas_all()
         except (ValueError, RuntimeError, DatabaseError) as e:
             log_and_raise_error(message=f"Failed to run query: {query}. "
-                                        f"Table: {table}, Database: {database}, Schema: {schema}."
                                         f"Error : {e}")
         else:
             log_and_update_slack(
@@ -200,3 +176,4 @@ class SnowflakeClient:
                         f"Table: {table}, Database: {database}, Schema: {schema}.",
                 temp=True,
             )
+            return dataframe
