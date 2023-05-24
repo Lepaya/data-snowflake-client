@@ -1,7 +1,7 @@
 # Lepaya Snowflake Client v1.3
 The Lepaya Snowflake Client is a Python library that allows you to interact with the Snowflake API and load/extract data and run queries on SnowflakeDB. This library was developed by Humaid Mollah for Lepaya.
 
-This client logs events internally using structlog = "~=22.3" and Lepaya's Python SlackClient - https://github.com/Lepaya/lepaya-python-slackclient release-1.2.
+This client logs events internally using structlog = "~=22.3" and Lepaya's Python SlackClient - https://github.com/Lepaya/lepaya-python-slackclient release-1.2.1.
 
 ## Installation
 To install the project dependencies, use the following commands:
