@@ -149,7 +149,7 @@ class SnowflakeClient:
         """
         log_and_update_slack(
             slack_client=self.slack_client,
-            message=f"Updating data in SnowflakeDB. "
+            message=f"Running query in SnowflakeDB. "
                     f"Table: {table}, Database: {database}, Schema: {schema}.",
             temp=True,
         )
@@ -172,7 +172,7 @@ class SnowflakeClient:
         else:
             log_and_update_slack(
                 slack_client=self.slack_client,
-                message=f"Successfully affected {cursor.rowcount} rows in SnowflakeDB. "
+                message=f"Successfully retrieved/affected {cursor.rowcount} rows in SnowflakeDB. "
                         f"Table: {table}, Database: {database}, Schema: {schema}.",
                 temp=True,
             )
