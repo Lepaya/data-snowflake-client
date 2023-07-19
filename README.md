@@ -22,10 +22,7 @@ class SnowflakeConfig(
 
     account = 'YOUR SNOWFLAKE ACCOUNT : <AccountID.RegionName>',
     username = 'YOUR SNWOFLAKE USERNAME',
-    password: 'YOUR SNOWFLAKE PASSWORD',
-    to_database_name = 'NAME OF DATABASE TO LOAD DATA INTO',
-    to_schema_name = 'NAME OF SCHEMA TO LOAD DATA INTO',
-    to_table_name = 'NAME OF TABLE TO LOAD DATA INTO',
+    password: 'YOUR SNOWFLAKE PASSWORD'
 )
 ````
 
