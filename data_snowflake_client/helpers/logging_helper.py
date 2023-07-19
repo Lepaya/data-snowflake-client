@@ -34,3 +34,12 @@ def log_and_raise_error(message: str):
     """
     LOGGER.info(message)
     raise ValueError(message)
+
+
+def log(message: str):
+    """Log a response.
+
+    Args:
+         message: plain error text message.
+    """
+    LOGGER.info(message)

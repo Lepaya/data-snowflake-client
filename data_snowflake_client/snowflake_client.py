@@ -8,7 +8,7 @@ from snowflake.connector import SnowflakeConnection
 from snowflake.connector.errors import DatabaseError
 from snowflake.connector.pandas_tools import write_pandas
 
-from .helpers.logging_helper import log_and_raise_error, log_and_update_slack
+from .helpers.logging_helper import log_and_raise_error, log_and_update_slack, log
 from .models.config_model import SnowflakeConfig
 
 
@@ -62,6 +62,56 @@ class SnowflakeClient:
             exc_tb: N/a
         """
         self.connection.close()  # type: ignore
+
+    def fetch_table_data(self, database: str, schema: str, table: str, warehouse: str | None = None,
+                         role: str | None = None) -> pd.DataFrame:
+        """Fetch data from a table in Snowflake as a pandas dataframe.
+
+        Args:
+            database: Name of the Snowflake database to fetch data.
+            schema: Name of the Snowflake schema to fetch data.
+            table: Name of the Snowflake table to fetch data.
+            warehouse: Name of the Snowflake warehouse to run query [Optional].
+            role: Name of the Snowflake role to run query [Optional].
+
+        Returns:
+            Pandas DataFrame with existing table data.
+            None, if an error occurs or the table has no rows.
+
+        Raises:
+            ValueError: Could not fetch table data.
+        """
+        log_and_update_slack(
+            slack_client=self.slack_client,
+            message=f"Fetching data from SnowflakeDB. "
+                    f"Table : {table}, Database: {database}, Schema: {schema}.",
+            temp=True,
+        )
+        try:
+            if self.connection is None:
+                raise RuntimeError("No active connection to SnowflakeDB")
+            if role is not None:
+                self.connection.cursor().execute(f"USE ROLE {role}")
+            if warehouse is not None:
+                self.connection.cursor().execute(f"USE WAREHOUSE {warehouse}")
+            self.connection.cursor().execute(f"USE DATABASE {database}")
+            self.connection.cursor().execute(f"USE SCHEMA {schema}")
+            cursor = self.connection.cursor().execute(f"SELECT * FROM {table}")
+            if not cursor:
+                raise ValueError("No valid cursor returned from Snowflake")
+            dataframe = cursor.fetch_pandas_all()
+        except (DatabaseError, RuntimeError, ValueError) as e:
+            log_and_raise_error(f"Could not fetch data from SnowflakeDB. "
+                                f"Table: {table}, Database: {database}, Schema: {schema}. "
+                                f"Error {e}.")
+        else:
+            log_and_update_slack(
+                slack_client=self.slack_client,
+                message=f"Successfully fetched {dataframe.shape[0]} rows from SnowflakeDB. "
+                        f"Table: {table}, Database: {database}, Schema: {schema}.",
+                temp=True,
+            )
+            return dataframe
 
     def load_dataframe(
             self,
@@ -165,7 +215,12 @@ class SnowflakeClient:
             cursor = self.connection.cursor().execute(query)
             if not cursor:
                 raise ValueError("No valid cursor returned from Snowflake")
-            dataframe = cursor.fetch_pandas_all()
+            dataframe = pd.DataFrame()
+            try:
+                if cursor.rowcount > 0:
+                    dataframe = cursor.fetch_pandas_all()
+            except DatabaseError:
+                log(message="Could not fetch any rows for this query.")
         except (ValueError, RuntimeError, DatabaseError) as e:
             log_and_raise_error(message=f"Failed to run query: {query}. "
                                         f"Error : {e}")
