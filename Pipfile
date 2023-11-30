@@ -8,7 +8,7 @@ data-slack-client = {git = "https://github.com/Lepaya/data-slack-client",ref = "
 pandas = "~=1.4"
 pyarrow = "~=8.0"
 pydantic = "~=1.9"
-snowflake-connector-python = "==2.7.11"
+snowflake-connector-python = "~=3.5"
 structlog = "~=22.3"
 
 [dev-packages]
