@@ -1,6 +1,8 @@
 """Client to interact with Snowflake."""
 from __future__ import annotations
 
+from typing import Sequence
+
 import pandas as pd
 import snowflake.connector
 from data_slack_client.slack_client import SlackClient
@@ -123,7 +125,25 @@ class SnowflakeClient:
             warehouse: str | None = None,
             role: str | None = None,
             quote_identifiers: bool = False
-    ) -> None:
+    ) -> tuple[
+        bool,
+        int,
+        int,
+        Sequence[
+            tuple[
+                str,
+                str,
+                int,
+                int,
+                int,
+                int,
+                str | None,
+                int | None,
+                int | None,
+                str | None,
+            ]
+        ],
+    ]:
         """Load a dataframe into a Snowflake table.
 
         If the table does not exist, a table is automatically created.
@@ -141,6 +161,10 @@ class SnowflakeClient:
 
         Raises:
             ValueError: Could not load dataframe.
+
+        Returns:
+            Returns the COPY INTO command's results to verify ingestion in the form of a tuple of whether all chunks were
+            ingested correctly, # of chunks, # of ingested rows, and ingest's output.
         """
         log_and_update_slack(
             slack_client=self.slack_client,
@@ -148,8 +172,6 @@ class SnowflakeClient:
                     f"Table: {table}, Database: {database}, Schema: {schema}.",
             temp=True,
         )
-        rows = 0
-        chunks = 0
         try:
             if self.connection is None:
                 raise RuntimeError("No active connection to SnowflakeDB")
@@ -159,7 +181,7 @@ class SnowflakeClient:
                 self.connection.cursor().execute(f"USE WAREHOUSE {warehouse}")
             self.connection.cursor().execute(f"USE DATABASE {database}")
             self.connection.cursor().execute(f"USE SCHEMA {schema}")
-            success, chunks, rows, _ = write_pandas(
+            success, chunks, rows, output = write_pandas(
                 conn=self.connection,
                 table_name=table,
                 df=dataframe,
@@ -178,6 +200,7 @@ class SnowflakeClient:
                             f"Table: {table}, Database: {database}, Schema: {schema}.",
                     temp=True,
                 )
+            return success, chunks, rows, output
 
     def run_query(self, query: str, table: str, schema: str, database: str, warehouse: str | None = None,
                   role: str | None = None) -> pd.DataFrame:
