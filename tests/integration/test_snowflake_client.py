@@ -1,22 +1,25 @@
 import unittest
-import snowflake.connector
-import pandas as pd
+from pathlib import Path
 
-from data_snowflake_client.models.config_model import SnowflakeConfig
+import pandas as pd
+import snowflake.connector
+
 from data_snowflake_client.snowflake_client import SnowflakeClient
+from tests.integration.configs.config_loader import load_config
+
+PROJECT_ROOT = Path(__file__).parent.parent.parent.resolve()
+CONFIG_FILE_PATH = f"{PROJECT_ROOT}/tests/integration/configs/config.yml"
 
 
 class TestSnowflakeClient(unittest.TestCase):
-    def setUp(self):
 
-        self.config = SnowflakeConfig(
-            account="",
-            password="",
-            username=""
-        )
-        self.database = "python_dev"
-        self.schema = "test_schema"
-        self.table = "test_table"
+    @classmethod
+    def setUp(cls):
+        configs = load_config(CONFIG_FILE_PATH)
+        cls.config = configs.snowflake
+        cls.database = "python_dev"
+        cls.schema = "test_schema"
+        cls.table = "test_table"
 
     def test_connection(self):
         # Test Snowflake connection
@@ -53,6 +56,13 @@ class TestSnowflakeClient(unittest.TestCase):
         # Assertions
         self.assertIsInstance(result_dataframe, pd.DataFrame)
         self.assertTrue(result_dataframe.shape[0] >= 0)
+
+    def test_invalid_location(self):
+
+        invalid_table = "Invalid"
+        with self.assertRaises(ValueError):
+            with SnowflakeClient(self.config) as client:
+                client.fetch_table_data(self.database, self.schema, invalid_table)
 
 
 if __name__ == '__main__':
