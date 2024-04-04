@@ -9,3 +9,8 @@ class SnowflakeConfig(BaseModel):
     username: constr(min_length=1)  # type: ignore
     password: constr(min_length=1)  # type: ignore
 
+
+class ConfigModel(BaseModel):
+    """Config data model."""
+
+    snowflake: SnowflakeConfig
