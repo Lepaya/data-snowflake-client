@@ -220,9 +220,20 @@ class SnowflakeClient:
         Returns:
             Pandas dataframe with the result of the query.
         """
+        query_upper = query.upper()
+        action = "Executing"
+        if "SELECT" in query_upper:
+            action = "Selecting"
+        elif "INSERT" in query_upper:
+            action = "Inserting"
+        elif "UPDATE" in query_upper:
+            action = "Updating"
+        elif "DELETE" in query_upper:
+            action = "Deleting"
+
         log_and_update_slack(
             slack_client=self.slack_client,
-            message=f"Updating data in SnowflakeDB. "
+            message=f"{action} data in SnowflakeDB. "
                     f"Table: {table}, Database: {database}, Schema: {schema}.",
             temp=True,
         )
@@ -250,7 +261,7 @@ class SnowflakeClient:
         else:
             log_and_update_slack(
                 slack_client=self.slack_client,
-                message=f"Successfully affected {cursor.rowcount} rows in SnowflakeDB. "
+                message=f"Successfully {action} {cursor.rowcount} rows in SnowflakeDB. "
                         f"Table: {table}, Database: {database}, Schema: {schema}.",
                 temp=True,
             )
