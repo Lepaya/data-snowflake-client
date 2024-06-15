@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-data-slack-client = {git = "https://github.com/Lepaya/data-slack-client",ref = "release-2.2"}
+data-slack-client = {git = "https://github.com/Lepaya/data-slack-client",ref = "release-3.0"}
 pandas = "~=1.4"
 pyarrow = "~=14.0"
 pydantic = "~=1.9"

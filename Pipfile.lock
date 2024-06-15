@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "4f8512089e8d6778c2508d8f59ee4e1cfa439011897b87b772dcfd05a2dd63e1"
+            "sha256": "1f419ec4e959e5c14398c98e4001cd51a647b81995bb211a6b8f79d200ca7d53"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -225,15 +225,15 @@
         },
         "data-slack-client": {
             "git": "https://github.com/Lepaya/data-slack-client",
-            "ref": "83509cc740090539da5c16b0ef99e187d4e89560"
+            "ref": "890823ebd860598eb826cd9e6ae35a00514c419a"
         },
         "filelock": {
             "hashes": [
-                "sha256:43339835842f110ca7ae60f1e1c160714c5a6afd15a2873419ab185334975c0f",
-                "sha256:6ea72da3be9b8c82afd3edcf99f2fffbb5076335a5ae4d03248bb5b6c3eae78a"
+                "sha256:58a2549afdf9e02e10720eaa4d4470f56386d7a6f72edd7d0596337af8ed7ad8",
+                "sha256:71b3102950e91dfc1bb4209b64be4dc8854f40e5f534428d8684f953ac847fac"
             ],
             "markers": "python_version >= '3.8'",
-            "version": "==3.14.0"
+            "version": "==3.15.1"
         },
         "idna": {
             "hashes": [
@@ -282,7 +282,7 @@
                 "sha256:f870204a840a60da0b12273ef34f7051e98c3b5961b61b0c2c1be6dfd64fbcd3",
                 "sha256:ffa75af20b44f8dba823498024771d5ac50620e6915abac414251bd971b4529f"
             ],
-            "markers": "python_version >= '3.10'",
+            "markers": "python_version >= '3.9'",
             "version": "==1.26.4"
         },
         "packaging": {
@@ -536,11 +536,11 @@
         },
         "slack-sdk": {
             "hashes": [
-                "sha256:1a47700ae20566575ce494d1d1b6f594b011d06aad28e3b8e28c052cad1d6c4c",
-                "sha256:e6ece5cb70850492637e002e3b0d26d307939f4a33203b88cb274f7475c9a144"
+                "sha256:1857300b9bdd5cd43eb527a0dd8c6415aa0623cd76e153bf167e93968efd5121",
+                "sha256:a6ad02fd23a7c70ded7e48e0fe317e269820e64e55069699cc75d64fb2ebf5a1"
             ],
             "markers": "python_version >= '3.6'",
-            "version": "==3.28.0"
+            "version": "==3.29.0"
         },
         "snowflake-connector-python": {
             "hashes": [
@@ -697,11 +697,11 @@
         },
         "filelock": {
             "hashes": [
-                "sha256:43339835842f110ca7ae60f1e1c160714c5a6afd15a2873419ab185334975c0f",
-                "sha256:6ea72da3be9b8c82afd3edcf99f2fffbb5076335a5ae4d03248bb5b6c3eae78a"
+                "sha256:58a2549afdf9e02e10720eaa4d4470f56386d7a6f72edd7d0596337af8ed7ad8",
+                "sha256:71b3102950e91dfc1bb4209b64be4dc8854f40e5f534428d8684f953ac847fac"
             ],
             "markers": "python_version >= '3.8'",
-            "version": "==3.14.0"
+            "version": "==3.15.1"
         },
         "flake8": {
             "hashes": [
