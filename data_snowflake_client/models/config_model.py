@@ -1,4 +1,5 @@
 """Config model."""
+
 from pydantic import BaseModel, constr
 
 
