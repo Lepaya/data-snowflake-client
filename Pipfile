@@ -4,29 +4,19 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-data-slack-client = {git = "https://github.com/Lepaya/data-slack-client",ref = "release-3.0"}
-pandas = "~=1.4"
-pyarrow = "~=14.0"
+data-slack-client = {git = "https://github.com/Lepaya/data-slack-client",ref = "release-4.0"}
 pydantic = "~=1.9"
 pyyaml = "~=6.0"
 snowflake-connector-python = "~=3.5"
 structlog = "~=22.3"
+pandas = "~=2.2"
+pyarrow = "~=17.0"
 
 [dev-packages]
-add-trailing-comma="~=2.4"
-autopep8 = "~=2.0"
-black = "~=23.1"
-flake8 = "~=6.0"
+pre-commit = "*"
+flake8 = "*"
 isort = "*"
-mypy = "~=1.0"
-pandas-stubs = "~=1.5"
-pre-commit = "~=3.0"
-pydocstyle = "*"
-pytest = "~=7.2"
-pyupgrade ="~=3.3"
-reorder-python-imports = "~=3.9"
-sourcery = "~=1.0"
-yapf="~=0.32"
+black = "*"
 
 [requires]
 python_version = "3.11"
