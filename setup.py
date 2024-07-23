@@ -24,8 +24,8 @@ setup(
     packages=find_packages(),
     install_requires=[
         "data-slack-client @ git+https://github.com/Lepaya/data-slack-client@release-4.0",
-        "pandas~=1.4",
-        "pyarrow~=14.0",
+        "pandas~=2.2",
+        "pyarrow~=17.0",
         "snowflake-connector-python~=3.5",
         "structlog~=22.3",
         "pydantic~=1.9",
