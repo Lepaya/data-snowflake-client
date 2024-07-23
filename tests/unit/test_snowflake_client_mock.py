@@ -10,11 +10,15 @@ class TestSnowflakeClient(unittest.TestCase):
     @classmethod
     def setUp(cls):
         # Patch the Snowflake connector and pandas
-        cls.patcher = patch('data_snowflake_client.snowflake_client.snowflake.connector.connect')
+        cls.patcher = patch(
+            "data_snowflake_client.snowflake_client.snowflake.connector.connect"
+        )
         cls.mock_snowflake_connector = cls.patcher.start()
 
         # Create instance of SnowflakeClient with mocked dependencies
-        cls.config = SnowflakeConfig(account='your_account', username='your_username', password='your_password')
+        cls.config = SnowflakeConfig(
+            account="your_account", username="your_username", password="your_password"
+        )
         cls.snowflake_client = SnowflakeClient(config=cls.config, slack_client=None)
 
     @classmethod
