@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 from json import JSONDecodeError
-from typing import Sequence, Union
+from typing import List, Sequence, Union
 
 import pandas as pd
 import snowflake.connector
@@ -197,15 +197,14 @@ class SnowflakeClient:
                 self.connection.cursor().execute(f"USE WAREHOUSE {warehouse}")
 
             # Load to temp and validate
-            # DEPRECATED FOR NOW!! The fetch_pandas_all function in run_query works only with SELECT statements
-            # self.validate_schema(
-            #     dataframe=dataframe,
-            #     database=database,
-            #     schema=schema,
-            #     table=table,
-            #     warehouse=warehouse,
-            #     role=role,
-            # )
+            self.validate_schema(
+                dataframe=dataframe,
+                database=database,
+                schema=schema,
+                table=table,
+                warehouse=warehouse,
+                role=role,
+            )
 
             # Load Data
             self.connection.cursor().execute(f"USE DATABASE {database}")
@@ -240,7 +239,7 @@ class SnowflakeClient:
         database: str,
         warehouse: str | None = None,
         role: str | None = None,
-    ) -> pd.DataFrame:
+    ) -> Union[pd.DataFrame, List]:
         """Run an SQL query on a Snowflake table.
 
         Args:
@@ -288,9 +287,10 @@ class SnowflakeClient:
             dataframe = pd.DataFrame()
             try:
                 if cursor.rowcount > 0:
-                    dataframe = (
-                        cursor.fetch_pandas_all()
-                    )  # works only with select statements
+                    if "SELECT" in query:
+                        dataframe = cursor.fetch_pandas_all()
+                    else:
+                        dataframe = cursor.fetchall()
             except DatabaseError:
                 log(message="Could not fetch any rows for this query.")
         except (ValueError, RuntimeError, DatabaseError) as e:
@@ -374,7 +374,7 @@ class SnowflakeClient:
             ),
             temp=False,
         )
-        existing_columns_df = self.run_query(
+        existing_columns = self.run_query(
             query=f"SHOW COLUMNS IN {database}.{schema}.{table}",
             table=table,
             schema=schema,
@@ -382,7 +382,7 @@ class SnowflakeClient:
             warehouse=warehouse,
             role=role,
         )
-        new_columns_df = self.run_query(
+        new_columns = self.run_query(
             query=f"SHOW COLUMNS IN {self.test_database}.{self.test_schema}.{table}",
             table=table,
             schema=self.test_schema,
@@ -390,6 +390,14 @@ class SnowflakeClient:
             warehouse=warehouse,
             role=role,
         )
+
+        try:
+            existing_columns_df = pd.DataFrame(existing_columns)
+            new_columns_df = pd.DataFrame(new_columns)
+        except (AttributeError, TypeError, KeyError, ValueError) as e:
+            log_and_raise_error(
+                message=f"Could not convert columns list to dataframe. Error: {e}"
+            )
 
         # Dictionary to map aliases to Snowflake data types
         data_type_mapping = {
@@ -412,16 +420,17 @@ class SnowflakeClient:
         }
 
         # Iterate over the new columns and add any that do not exist in the existing columns
-
+        column_names_index = 2
+        data_type_index = 3
         for _, row in new_columns_df.iterrows():
             try:
                 if (
-                    row["COLUMN_NAME"]
-                    not in existing_columns_df["COLUMN_NAME"].tolist()
+                    row[column_names_index]
+                    not in existing_columns_df[column_names_index].tolist()
                 ):
-                    new_column = row["COLUMN_NAME"]
+                    new_column = row[column_names_index]
 
-                    data_type_info = json.loads(row["DATA_TYPE"])
+                    data_type_info = json.loads(row[data_type_index])
                     column_type = data_type_info["type"]
                     nullable = data_type_info.get("nullable", True)
                     default_value = data_type_info.get(

@@ -1,6 +1,9 @@
+import random
+import string
 import unittest
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 import snowflake.connector
 
@@ -41,12 +44,31 @@ class TestSnowflakeClient(unittest.TestCase):
 
     def test_load_dataframe(self):
         dataframe = pd.DataFrame(
-            {"col1": [1, 2], "col2": ["A", "B"], "col3": ["C", "D"]}
+            {"col1": [1, 2], "col2": ["A", "B"], "col3": ["C", "D"], "num": [1, 2]}
         )
 
         with SnowflakeClient(self.config) as client:
             client.load_dataframe(
                 dataframe, self.database, self.schema, self.table, overwrite=True
+            )
+
+    def test_load_dataframe_additional_column(self):
+        dataframe = pd.DataFrame(
+            {"col1": [1, 2], "col2": ["A", "B"], "random_col": [3, 4]}
+        )
+
+        letters = string.ascii_lowercase
+        random_column_name = "".join(random.choice(letters) for _ in range(5))
+        random_values = np.random.randint(1, 10, size=len(dataframe))
+        dataframe[random_column_name] = random_values
+
+        with SnowflakeClient(self.config) as client:
+            client.load_dataframe(
+                dataframe,
+                self.database,
+                self.schema,
+                f"{self.table}_add_column",
+                overwrite=False,
             )
 
     def test_run_query(self):
