@@ -345,7 +345,7 @@ class SnowflakeClient:
             message=(
                 f"Loading data into temp table : {self.test_database}.{self.test_schema}.{table}."
             ),
-            temp=False,
+            temp=True,
         )
         try:
             self.connection.cursor().execute(f"USE DATABASE {self.test_database}")
@@ -372,7 +372,7 @@ class SnowflakeClient:
             message=(
                 f"Validating schema against temp table : {self.test_database}.{self.test_schema}.{table}."
             ),
-            temp=False,
+            temp=True,
         )
         existing_columns = self.run_query(
             query=f"SHOW COLUMNS IN {database}.{schema}.{table}",
