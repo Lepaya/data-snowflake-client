@@ -13,8 +13,9 @@ from snowflake.connector import SnowflakeConnection
 from snowflake.connector.errors import DatabaseError
 from snowflake.connector.pandas_tools import write_pandas
 
-from .helpers.logging_helper import log, log_and_raise_error, log_and_update_slack
 from .models.config_model import SnowflakeConfig
+from .utils.encoding import convert_private_key_to_der, decode_data_base64
+from .utils.logger import log, log_and_raise_error, log_and_update_slack
 
 
 class SnowflakeClient:
@@ -32,7 +33,7 @@ class SnowflakeClient:
         """
         self.account = config.account
         self.username = config.username
-        self.password = config.password
+        self.private_key = config.private_key
         self.connection: SnowflakeConnection | None = None
         self.slack_client = slack_client
 
@@ -50,10 +51,13 @@ class SnowflakeClient:
             ValueError: Could not make connection to Snowflake.
         """
         try:
+            private_key_bytes = convert_private_key_to_der(
+                decode_data_base64(self.private_key)
+            )
             self.connection = snowflake.connector.connect(
                 account=self.account,
                 user=self.username,
-                password=self.password,
+                private_key=private_key_bytes,
             )
             log_and_update_slack(
                 slack_client=self.slack_client,
