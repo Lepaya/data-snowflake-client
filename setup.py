@@ -8,7 +8,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 with codecs.open(os.path.join(here, "README.md"), encoding="utf-8") as fh:
     long_description = "\n" + fh.read()
 
-VERSION = "4.0"
+VERSION = "5.0"
 DESCRIPTION = "Python snowflake client for Lepaya"
 LONG_DESCRIPTION = "A package that allows to interact with the snowflake api and load/extract data from Snowflake"
 
@@ -29,6 +29,7 @@ setup(
         "snowflake-connector-python~=3.5",
         "structlog~=22.3",
         "pydantic~=1.9",
+        "cryptography~=42.0",
     ],
     keywords=["python", "snowflake", "dataframe", "extract", "load", "table"],
     classifiers=[
