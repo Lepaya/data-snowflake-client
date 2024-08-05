@@ -8,7 +8,7 @@ class SnowflakeConfig(BaseModel):
 
     account: constr(min_length=1)  # type: ignore
     username: constr(min_length=1)  # type: ignore
-    password: constr(min_length=1)  # type: ignore
+    private_key: constr(min_length=1)  # type: ignore
 
 
 class ConfigModel(BaseModel):
