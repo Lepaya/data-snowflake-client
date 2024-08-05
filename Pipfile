@@ -11,6 +11,7 @@ snowflake-connector-python = "~=3.5"
 structlog = "~=22.3"
 pandas = "~=2.2"
 pyarrow = "~=17.0"
+cryptography = "~=42.0"
 
 [dev-packages]
 pre-commit = "*"
