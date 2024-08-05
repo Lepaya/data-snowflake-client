@@ -1,4 +1,4 @@
 snowflake:
   account: !ENV ${SNOWFLAKE_ACCOUNT}
   username: !ENV ${SNOWFLAKE_USERNAME}
-  password: !ENV ${SNOWFLAKE_PASSWORD}
+  private_key: !ENV ${SNOWFLAKE_PRIVATE_KEY}
