@@ -16,7 +16,6 @@ from lepaya_python_snowflakeclient.snowflake_client import SnowflakeClient
 
 ````
 class SnowflakeConfig(
-
     account = 'YOUR SNOWFLAKE ACCOUNT : <AccountID.RegionName>',
     username = 'YOUR SNWOFLAKE USERNAME',
     private_key: 'YOUR BASE64 ENCODED SNOWFLAKE RSA PRIVATE KEY',
@@ -24,8 +23,8 @@ class SnowflakeConfig(
 ````
 
 ````
-with SnowflakeClient(config=configs.snowflake, slack_client=slack) as snowflake:
-    #code here
+with SnowflakeClient(config = SnowflakeConfig) as client:
+    dataframe = client.fetch_table_data(database="ingest", schema="git", table="deployments")
 ````
 
 ### Functions
