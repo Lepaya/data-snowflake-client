@@ -21,9 +21,7 @@ from .utils.logger import log, log_and_raise_error, log_and_update_slack
 class SnowflakeClient:
     """Client used to interact with Snowflake."""
 
-    def __init__(
-        self, config: SnowflakeConfig, slack_client: SlackClient | None = None
-    ):
+    def __init__(self, config: SnowflakeConfig, slack_client: SlackClient | None = None):
         """
         Initialize the Snowflake Client.
 
@@ -34,7 +32,7 @@ class SnowflakeClient:
         self.account = config.account
         self.username = config.username
         self.private_key = config.private_key
-        self.connection: SnowflakeConnection | None = None
+        self.connection: SnowflakeConnection = None
         self.slack_client = slack_client
 
         self.test_database = "python_dev"
@@ -51,9 +49,7 @@ class SnowflakeClient:
             ValueError: Could not make connection to Snowflake.
         """
         try:
-            private_key_bytes = convert_private_key_to_der(
-                decode_data_base64(self.private_key)
-            )
+            private_key_bytes = convert_private_key_to_der(decode_data_base64(self.private_key))
             self.connection = snowflake.connector.connect(
                 account=self.account,
                 user=self.username,
@@ -65,9 +61,7 @@ class SnowflakeClient:
                 temp=True,
             )
         except DatabaseError as e:
-            log_and_raise_error(
-                message=f"Failed to connect to SnowflakeDB. Error : {e}."
-            )
+            log_and_raise_error(message=f"Failed to connect to SnowflakeDB. Error : {e}.")
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:  # type: ignore
@@ -124,9 +118,7 @@ class SnowflakeClient:
                 raise ValueError("No valid cursor returned from Snowflake")
             dataframe = cursor.fetch_pandas_all()
         except (DatabaseError, RuntimeError, ValueError) as e:
-            log_and_raise_error(
-                f"Could not fetch data from {database}.{schema}.{table}" f"Error {e}."
-            )
+            log_and_raise_error(f"Could not fetch data from {database}.{schema}.{table}" f"Error {e}.")
         else:
             log_and_update_slack(
                 slack_client=self.slack_client,
@@ -221,19 +213,19 @@ class SnowflakeClient:
                 overwrite=overwrite,
                 quote_identifiers=quote_identifiers,
             )
+
         except (DatabaseError, RuntimeError) as e:
             log_and_raise_error(
-                message=f"Failed to insert {dataframe.shape[0]} rows into {database}.{schema}.{table} "
-                f"Error : {e}."
+                message=f"Failed to insert {dataframe.shape[0]} rows into {database}.{schema}.{table} " f"Error : {e}."
             )
-        else:
-            if success:
-                log_and_update_slack(
-                    slack_client=self.slack_client,
-                    message=f"Successfully inserted {rows} rows in {chunks} chunks into {database}.{schema}.{table}",
-                    temp=True,
-                )
-            return success, chunks, rows, output
+
+        if success:
+            log_and_update_slack(
+                slack_client=self.slack_client,
+                message=f"Successfully inserted {rows} rows in {chunks} chunks into {database}.{schema}.{table}",
+                temp=True,
+            )
+        return success, chunks, rows, output
 
     def run_query(
         self,
@@ -298,17 +290,14 @@ class SnowflakeClient:
             except DatabaseError:
                 log(message="Could not fetch any rows for this query.")
         except (ValueError, RuntimeError, DatabaseError) as e:
-            log_and_raise_error(
-                message=f"Failed to run query: {query} on {database}.{schema}.{table} "
-                f"Error : {e}"
-            )
-        else:
-            log_and_update_slack(
-                slack_client=self.slack_client,
-                message=f"Successfully retrieved {cursor.rowcount} rows.",
-                temp=True,
-            )
-            return dataframe
+            log_and_raise_error(message=f"Failed to run query: {query} on {database}.{schema}.{table} " f"Error : {e}")
+
+        log_and_update_slack(
+            slack_client=self.slack_client,
+            message=f"Successfully retrieved {cursor.rowcount} rows.",
+            temp=True,
+        )
+        return dataframe
 
     def validate_schema(
         self,
@@ -346,9 +335,7 @@ class SnowflakeClient:
         # Load to temp
         log_and_update_slack(
             slack_client=self.slack_client,
-            message=(
-                f"Loading data into temp table : {self.test_database}.{self.test_schema}.{table}."
-            ),
+            message=(f"Loading data into temp table : {self.test_database}.{self.test_schema}.{table}."),
             temp=True,
         )
         try:
@@ -373,9 +360,7 @@ class SnowflakeClient:
         # Validate Schema
         log_and_update_slack(
             slack_client=self.slack_client,
-            message=(
-                f"Validating schema against temp table : {self.test_database}.{self.test_schema}.{table}."
-            ),
+            message=(f"Validating schema against temp table : {self.test_database}.{self.test_schema}.{table}."),
             temp=True,
         )
         existing_columns = self.run_query(
@@ -399,9 +384,7 @@ class SnowflakeClient:
             existing_columns_df = pd.DataFrame(existing_columns)
             new_columns_df = pd.DataFrame(new_columns)
         except (AttributeError, TypeError, KeyError, ValueError) as e:
-            log_and_raise_error(
-                message=f"Could not convert columns list to dataframe. Error: {e}"
-            )
+            log_and_raise_error(message=f"Could not convert columns list to dataframe. Error: {e}")
 
         # Dictionary to map aliases to Snowflake data types
         data_type_mapping = {
@@ -428,18 +411,13 @@ class SnowflakeClient:
         data_type_index = 3
         for _, row in new_columns_df.iterrows():
             try:
-                if (
-                    row[column_names_index]
-                    not in existing_columns_df[column_names_index].tolist()
-                ):
+                if row[column_names_index] not in existing_columns_df[column_names_index].tolist():
                     new_column = row[column_names_index]
 
                     data_type_info = json.loads(row[data_type_index])
                     column_type = data_type_info["type"]
                     nullable = data_type_info.get("nullable", True)
-                    default_value = data_type_info.get(
-                        "default", None
-                    )  # Get default value if present
+                    default_value = data_type_info.get("default", None)  # Get default value if present
 
                     # Map the column type using the dictionary
                     column_type_mapped = data_type_mapping.get(column_type, column_type)

@@ -2,7 +2,7 @@
 
 import os
 import re
-from typing import Dict
+from typing import Dict, Optional
 
 import yaml
 from pydantic import ValidationError
@@ -13,7 +13,7 @@ from data_snowflake_client.models.config_model import ConfigModel
 LOGGER = get_logger()
 
 
-def parse_config(path: str = None, data: str = None, tag: str = "!ENV"):
+def parse_config(path: Optional[str] = None, data: Optional[str] = None, tag: str = "!ENV"):
     """
     Load a yaml configuration file and resolve any environment variables.
 

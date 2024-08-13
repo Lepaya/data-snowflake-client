@@ -43,19 +43,13 @@ class TestSnowflakeClient(unittest.TestCase):
         self.assertTrue(dataframe.shape[0] > 0)
 
     def test_load_dataframe(self):
-        dataframe = pd.DataFrame(
-            {"col1": [1, 2], "col2": ["A", "B"], "col3": ["C", "D"], "num": [1, 2]}
-        )
+        dataframe = pd.DataFrame({"col1": [1, 2], "col2": ["A", "B"], "col3": ["C", "D"], "num": [1, 2]})
 
         with SnowflakeClient(self.config) as client:
-            client.load_dataframe(
-                dataframe, self.database, self.schema, self.table, overwrite=True
-            )
+            client.load_dataframe(dataframe, self.database, self.schema, self.table, overwrite=True)
 
     def test_load_dataframe_additional_column(self):
-        dataframe = pd.DataFrame(
-            {"col1": [1, 2], "col2": ["A", "B"], "random_col": [3, 4]}
-        )
+        dataframe = pd.DataFrame({"col1": [1, 2], "col2": ["A", "B"], "random_col": [3, 4]})
 
         letters = string.ascii_lowercase
         random_column_name = "".join(random.choice(letters) for _ in range(5))
@@ -77,9 +71,7 @@ class TestSnowflakeClient(unittest.TestCase):
 
         # Run a query on Snowflake
         with SnowflakeClient(self.config) as client:
-            result_dataframe = client.run_query(
-                query, self.table, self.schema, self.database
-            )
+            result_dataframe = client.run_query(query, self.table, self.schema, self.database)
 
         # Assertions
         self.assertIsInstance(result_dataframe, pd.DataFrame)
