@@ -1,4 +1,4 @@
-name: Run Tests
+name: Run Pre-commit checks and Tests
 
 on:
   push:
