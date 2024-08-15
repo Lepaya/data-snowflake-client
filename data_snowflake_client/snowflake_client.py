@@ -192,15 +192,16 @@ class SnowflakeClient:
             if warehouse is not None:
                 self.connection.cursor().execute(f"USE WAREHOUSE {warehouse}")
 
-            # Load to temp and validate
-            self.validate_schema(
-                dataframe=dataframe,
-                database=database,
-                schema=schema,
-                table=table,
-                warehouse=warehouse,
-                role=role,
-            )
+            if self.check_if_table_exists(database=database, schema=schema, table=table):
+                # Load to temp and validate
+                self.validate_schema(
+                    dataframe=dataframe,
+                    database=database,
+                    schema=schema,
+                    table=table,
+                    warehouse=warehouse,
+                    role=role,
+                )
 
             # Load Data
             self.connection.cursor().execute(f"USE DATABASE {database}")
@@ -490,3 +491,25 @@ class SnowflakeClient:
                         f"Error: {e}."
                     )
                 )
+
+    def check_if_table_exists(self, database: str, schema: str, table: str) -> bool:
+        """
+        Check if a table exists in the specified database and schema.
+
+        Args:
+            database (str): The name of the database to use.
+            schema (str): The name of the schema to use.
+            table (str): The name of the table to check.
+
+        Returns:
+            bool: True if the table exists, False otherwise.
+        """
+        self.connection.cursor().execute(f"USE DATABASE {database}")
+        self.connection.cursor().execute(f"USE SCHEMA {schema}")
+        query = f"""
+            SELECT *
+            FROM {database}.INFORMATION_SCHEMA.TABLES
+            WHERE TABLE_NAME = '{table.upper()}';
+        """
+        tables_df = self.run_query(query=query, database=database, schema=schema, table=table)
+        return len(tables_df) > 0
