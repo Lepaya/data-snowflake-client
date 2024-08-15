@@ -84,6 +84,14 @@ class TestSnowflakeClient(unittest.TestCase):
             with SnowflakeClient(self.config) as client:
                 client.fetch_table_data(self.database, self.schema, invalid_table)
 
+    def test_table_exists(self):
+
+        with SnowflakeClient(self.config) as client:
+            existing_table = client.check_if_table_exists(self.database, self.schema, self.table)
+            self.assertTrue(existing_table)
+            non_existing_table = client.check_if_table_exists(self.database, self.schema, "non_existing_table")
+            self.assertFalse(non_existing_table)
+
 
 if __name__ == "__main__":
     unittest.main()
