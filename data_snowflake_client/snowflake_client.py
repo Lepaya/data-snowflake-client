@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from datetime import datetime
 from json import JSONDecodeError
 from typing import List, Sequence, Union
 
@@ -334,11 +335,13 @@ class SnowflakeClient:
             AttributeError: If there is an attribute error during the schema validation.
         """
         # Load to temp
+        test_table = f"{self.test_database}.{self.test_schema}.{table}_{datetime.now().strftime('%Y%m%d%H%M%S')}"
         log_and_update_slack(
             slack_client=self.slack_client,
-            message=(f"Loading data into temp table : {self.test_database}.{self.test_schema}.{table}."),
+            message=(f"Loading data into temp table : {test_table}."),
             temp=True,
         )
+        self.connection.cursor().execute(f"drop table if exists {test_table}")
         try:
             self.connection.cursor().execute(f"USE DATABASE {self.test_database}")
             self.connection.cursor().execute(f"USE SCHEMA {self.test_schema}")
@@ -354,14 +357,14 @@ class SnowflakeClient:
             log_and_raise_error(
                 message=(
                     f"Failed to create validation table and insert {dataframe.shape[0]} rows "
-                    f"{self.test_database}.{self.test_schema}.{table}. Error: {e}."
+                    f"{test_table}. Error: {e}."
                 )
             )
 
         # Validate Schema
         log_and_update_slack(
             slack_client=self.slack_client,
-            message=(f"Validating schema against temp table : {self.test_database}.{self.test_schema}.{table}."),
+            message=(f"Validating schema against temp table : {test_table}."),
             temp=True,
         )
         existing_columns = self.run_query(
@@ -373,7 +376,7 @@ class SnowflakeClient:
             role=role,
         )
         new_columns = self.run_query(
-            query=f"SHOW COLUMNS IN {self.test_database}.{self.test_schema}.{table}",
+            query=f"SHOW COLUMNS IN {test_table}",
             table=table,
             schema=self.test_schema,
             database=self.test_database,
@@ -487,10 +490,11 @@ class SnowflakeClient:
                 log_and_raise_error(
                     message=(
                         f"Failed to alter table and add new column: {new_column} with data type: "
-                        f"{column_definition} in {self.test_database}.{self.test_schema}.{table}. "
+                        f"{column_definition} in {test_table}. "
                         f"Error: {e}."
                     )
                 )
+        self.connection.cursor().execute(f"drop table if exists {test_table}")
 
     def check_if_table_exists(self, database: str, schema: str, table: str) -> bool:
         """
