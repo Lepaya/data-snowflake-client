@@ -9,8 +9,10 @@ with codecs.open(os.path.join(here, "README.md"), encoding="utf-8") as fh:
     long_description = "\n" + fh.read()
 
 VERSION = "5.1"
-DESCRIPTION = "Python snowflake client for Lepaya"
-LONG_DESCRIPTION = "A package that allows to interact with the snowflake api and load/extract data from Snowflake"
+DESCRIPTION = "Python snowflake client for Lepaya Data team"
+LONG_DESCRIPTION = (
+    "A python package that allows to interact with the snowflake api and load/extract data from Snowflake"
+)
 
 # Setting up
 setup(
@@ -23,7 +25,7 @@ setup(
     long_description=long_description,
     packages=find_packages(),
     install_requires=[
-        "data-slack-client @ git+https://github.com/Lepaya/data-slack-client@release-4.0",
+        "data-slack-client @ git+https://github.com/Lepaya/data-slack-client",
         "pandas~=2.2",
         "pyarrow~=17.0",
         "snowflake-connector-python~=3.5",
