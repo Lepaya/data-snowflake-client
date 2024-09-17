@@ -8,7 +8,6 @@ here = os.path.abspath(os.path.dirname(__file__))
 with codecs.open(os.path.join(here, "README.md"), encoding="utf-8") as fh:
     long_description = "\n" + fh.read()
 
-VERSION = "6.0"
 DESCRIPTION = "Python snowflake client for Lepaya Data team"
 LONG_DESCRIPTION = (
     "A python package that allows to interact with the snowflake api and load/extract data from Snowflake"
@@ -17,7 +16,7 @@ LONG_DESCRIPTION = (
 # Setting up
 setup(
     name="data_snowflake_client",
-    version=VERSION,
+    version="6.1.0",
     author="Humaid Mollah",
     author_email="humaid.mollah@lepaya.com",
     description=DESCRIPTION,
