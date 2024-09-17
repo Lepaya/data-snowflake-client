@@ -16,7 +16,7 @@ LONG_DESCRIPTION = (
 # Setting up
 setup(
     name="data_snowflake_client",
-    version="6.0.0",
+    version="6.1.0",
     author="Humaid Mollah",
     author_email="humaid.mollah@lepaya.com",
     description=DESCRIPTION,
