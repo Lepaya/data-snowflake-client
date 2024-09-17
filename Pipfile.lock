@@ -251,7 +251,7 @@
         },
         "data-slack-client": {
             "git": "https://github.com/Lepaya/data-slack-client",
-            "ref": "e42f6faa3af48759203bdd7051d45e4fc1a04187"
+            "ref": "8e5da4f3c95ba7ff01f23c08cedcef3328f6b51f"
         },
         "filelock": {
             "hashes": [
@@ -325,7 +325,7 @@
                 "sha256:fac6e277a41163d27dfab5f4ec1f7a83fac94e170665a4a50191b545721c6521",
                 "sha256:fcd8f556cdc8cfe35e70efb92463082b7f43dd7e547eb071ffc36abc0ca4699b"
             ],
-            "markers": "python_version >= '3.10'",
+            "markers": "python_version == '3.11'",
             "version": "==2.1.1"
         },
         "packaging": {
